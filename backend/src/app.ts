@@ -2,27 +2,23 @@ import { fastifyCors } from "@fastify/cors"
 import helmet from "@fastify/helmet"
 import { fastifySwagger } from "@fastify/swagger"
 import { fastifySwaggerUi } from "@fastify/swagger-ui"
-import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod"
+import {
+  jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from "fastify-type-provider-zod"
 
 import { fastify } from "fastify"
 
-const app = fastify()
+import { userRoutes } from "./modules"
+
+const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifyCors, { origin: "*" })
-
-app.register(fastifySwagger, {
-  openapi: {
-    openapi: "3.1.1",
-    info: {
-      version: "1.0.0",
-      title: "User Auth",
-      description: "Testing the User Auth API",
-    },
-  },
-})
 
 // Enable Helmet for Security Headers
 app.register(helmet, {
@@ -42,6 +38,24 @@ app.register(helmet, {
   },
 })
 
+app.register(fastifySwagger, {
+  openapi: {
+    openapi: "3.1.1",
+    info: {
+      version: "1.0.0",
+      title: "User Auth",
+      description: "Testing the User Auth API",
+    },
+    servers: [
+      {
+        url: "/backend",
+        description: "Backend API server",
+      },
+    ],
+  },
+  transform: jsonSchemaTransform,
+})
+
 app.register(fastifySwaggerUi, {
   routePrefix: "/swagger",
   staticCSP: true,
@@ -52,11 +66,12 @@ app.register(fastifySwaggerUi, {
   transformStaticCSP: header => header,
 })
 
-app.get("/", (_, reply) => {
-  return reply
-    .code(200)
-    .header("Content-Type", "application/json; charset=utf-8")
-    .send({ hello: "world" })
-})
+// V1 API Middleware
+app.register(
+  async appInstance => {
+    appInstance.register(userRoutes, { prefix: "/users" })
+  },
+  { prefix: "/v1/api" }
+)
 
 export { app }

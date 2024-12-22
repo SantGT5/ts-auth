@@ -1,14 +1,14 @@
+import { env } from "@/config"
 import boxen from "boxen"
 
 import { app } from "./app"
-import { config } from "./config"
 
-const port = config.port
+const port = env.port
 
 app
   .listen({ port, host: "0.0.0.0" })
   .then(url => {
-    const environment = config.environment
+    const environment = env.environment
     const timestamp = new Date().toLocaleString()
 
     const serverMessage = `

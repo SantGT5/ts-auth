@@ -10,6 +10,10 @@ localhost {
 		BACKEND_PORT {env.BACKEND_PORT}
 	}
 
+	# Caddy status endpoint
+	redir /caddy-status /caddy-status/
+	respond /caddy-status/ "OK" 200
+
 	handle /swagger/static/* {
 		reverse_proxy backend:{vars.BACKEND_PORT}
 	}
