@@ -2,13 +2,14 @@
   "name": "ts-auth",
   "version": "1.0.0",
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "format": "prettier --write './src/**/*'",
     "format:check": "prettier --check './src/**/*' --debug-check"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
+    "@fastify/helmet": "^13.0.0",
     "@fastify/swagger": "^9.4.0",
     "@fastify/swagger-ui": "^5.2.0",
     "boxen": "^5.1.2",

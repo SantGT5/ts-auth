@@ -1,4 +1,5 @@
 import { fastifyCors } from "@fastify/cors"
+import helmet from "@fastify/helmet"
 import { fastifySwagger } from "@fastify/swagger"
 import { fastifySwaggerUi } from "@fastify/swagger-ui"
 import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod"
@@ -19,6 +20,24 @@ app.register(fastifySwagger, {
       version: "1.0.0",
       title: "User Auth",
       description: "Testing the User Auth API",
+    },
+  },
+})
+
+// Enable Helmet for Security Headers
+app.register(helmet, {
+  global: true,
+  noSniff: true,
+  xssFilter: true,
+  hidePoweredBy: true,
+  frameguard: { action: "deny" },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https: 'unsafe-inline'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
     },
   },
 })
