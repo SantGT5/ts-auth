@@ -12,12 +12,37 @@ import {
 import { fastify } from "fastify"
 
 import { userRoutes } from "./modules"
+import postgresPlugin from "./services/postgres"
 
-const app = fastify().withTypeProvider<ZodTypeProvider>()
+const app = fastify({
+  logger: {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        colorize: true,
+        ignore: "pid,hostname",
+        translateTime: "yyyy-mm-dd HH:mm:ss",
+      },
+    },
+    serializers: {
+      req: req => ({
+        url: req.url,
+        method: req.method,
+      }),
+      res: reply => ({
+        url: reply?.request?.url,
+        statusCode: reply.statusCode,
+        method: reply?.request?.method,
+      }),
+    },
+  },
+}).withTypeProvider<ZodTypeProvider>()
 
+// Zod Validation
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
+// Cors
 app.register(fastifyCors, { origin: "*" })
 
 // Enable Helmet for Security Headers
@@ -38,6 +63,10 @@ app.register(helmet, {
   },
 })
 
+// PostgreSQL connection plugin
+app.register(postgresPlugin)
+
+// Swagger
 app.register(fastifySwagger, {
   openapi: {
     openapi: "3.1.1",
@@ -56,6 +85,7 @@ app.register(fastifySwagger, {
   transform: jsonSchemaTransform,
 })
 
+// Swagger UI
 app.register(fastifySwaggerUi, {
   routePrefix: "/swagger",
   staticCSP: true,
@@ -66,7 +96,7 @@ app.register(fastifySwaggerUi, {
   transformStaticCSP: header => header,
 })
 
-// V1 API Middleware
+// V1 API Routes
 app.register(
   async appInstance => {
     appInstance.register(userRoutes, { prefix: "/users" })

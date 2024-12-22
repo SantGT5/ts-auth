@@ -11,13 +11,11 @@ app
     const environment = env.environment
     const timestamp = new Date().toLocaleString()
 
-    const serverMessage = `
-🚀 ${"Server Status".padEnd(15)}: RUNNING
+    const serverMessage = `🚀 ${"Server Status".padEnd(15)}: RUNNING
 🌍 ${"Environment".padEnd(15)}: ${environment.toUpperCase()}
-🔗 ${"URL".padEnd(15)}: ${url}
+🔗 ${"Backend".padEnd(15)}: ${url}
 📄 ${"Swagger".padEnd(15)}: ${url}/swagger
-⏰ ${"Started At".padEnd(15)}: ${timestamp}
-    `
+⏰ ${"Started At".padEnd(15)}: ${timestamp}`
 
     // eslint-disable-next-line no-console
     console.log(
@@ -35,10 +33,9 @@ app
   .catch(error => {
     const timestamp = new Date().toLocaleString()
 
-    const errorMessage = `
-❌ ${"Server Status".padEnd(15)}: FAILED
+    const errorMessage = `❌ ${"Server Status".padEnd(15)}: FAILED
 ⏰ ${"Timestamp".padEnd(15)}: ${timestamp}
-    `
+`
 
     console.error(
       boxen(errorMessage, {
