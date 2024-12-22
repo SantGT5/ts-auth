@@ -1,0 +1,44 @@
+# IDE and editor directories
+.idea/
+.vscode/
+
+# Build and coverage outputs
+build/
+coverage/
+dist/
+
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Static assets and generated files
+public/
+assets/
+*.svg
+*.png
+*.jpg
+*.ico
+
+# Environment and configuration files
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+
+# Prettier configuration itself (if using JSON/YAML files)
+.prettierrc
+.prettierignore
+
+# Compiled files
+*.min.js
+*.min.css

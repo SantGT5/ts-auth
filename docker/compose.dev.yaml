@@ -1,0 +1,14 @@
+services:
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/stack/backend/Dockerfile.dev
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+
+  caddy:
+    volumes:
+      - ./caddy/dev/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config

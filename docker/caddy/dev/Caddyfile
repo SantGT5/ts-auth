@@ -1,0 +1,25 @@
+# Development environment configuration
+{
+	log {
+		level ERROR
+	}
+}
+
+localhost {
+	vars {
+		BACKEND_PORT {env.BACKEND_PORT}
+	}
+
+	handle /swagger/static/* {
+		reverse_proxy backend:{vars.BACKEND_PORT}
+	}
+
+	redir /backend /backend/ permanent
+	handle_path /backend/* {
+		reverse_proxy backend:{vars.BACKEND_PORT}
+	}
+
+	handle {
+		respond "Not Found" 404
+	}
+}
