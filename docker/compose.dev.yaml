@@ -12,3 +12,7 @@ services:
       - ./caddy/dev/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+
+  postgres:
+    ports:
+      - 5432:5432
