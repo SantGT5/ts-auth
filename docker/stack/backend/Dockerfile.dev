@@ -2,14 +2,26 @@ FROM node:23.5-alpine3.20
 
 RUN npm install -g pnpm
 
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
+
 WORKDIR /app
 
 COPY backend/package.json backend/pnpm-lock.yaml ./
 
-RUN pnpm install
+RUN pnpm i
 
 COPY backend/ .
 
-EXPOSE 3000
+# Copy migration scripts
+COPY docker/stack/backend/migrate-up.sh /usr/local/bin/
+COPY docker/stack/backend/migrate-down.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/migrate-up.sh
+RUN chmod +x /usr/local/bin/migrate-down.sh
+
+ENTRYPOINT ["migrate-up.sh"]
+
+EXPOSE 8081
 
 CMD ["pnpm", "run", "dev"]
